@@ -1,4 +1,6 @@
-import { OAuthConfig, OAuthUserConfig } from "next-auth/providers"
+import { TokenSet, User } from "next-auth"
+import { OAuthConfig, OAuthUserConfig } from "next-auth/providers/oauth"
+import { URLSearchParams } from "url"
 import { z } from "zod"
 
 export interface XboxProfile extends Record<string, any> {
@@ -33,15 +35,46 @@ export default function XboxLive<P extends XboxProfile>(
           scope: "openid email XboxLive.signin",
         },
       },
+      token: {
+        async request({params, provider}: { params: Record<string, string>, provider: OAuthConfig<P> }) {
+          const response = await fetch(
+            `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/token`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: new URLSearchParams({
+                client_id: provider.clientId!,
+                client_secret: provider.clientSecret!,
+                code: params.code!,
+                grant_type: "authorization_code",
+                redirect_uri: provider.callbackUrl!,
+              })
+            }
+          )
+
+          const responseJson = await response.json()
+
+          const tokens: TokenSet = {
+            access_token: responseJson.access_token,
+            id_token: responseJson.id_token,
+            refresh_token: responseJson.refresh_token,
+            token_type: responseJson.token_type,
+            scope: responseJson.scope,
+            expires_in: responseJson.expires_in,
+          }
+
+          return {tokens}
+        }
+      },
       userinfo: {
-        async request({ tokens }) {
-            console.log("AT USERINFO WITH TOKENS", tokens)
+        async request({ tokens }: { tokens: TokenSet }) {
           if (tokens.id_token) {
             const decoded = JSON.parse(
               Buffer.from(tokens.id_token.split(".")[1]!, "base64").toString()
             ) as { email: string }
 
-            console.log("DECODED", decoded)
   
             const xbox = await fetch(
               "https://user.auth.xboxlive.com/user/authenticate",
@@ -87,10 +120,6 @@ export default function XboxLive<P extends XboxProfile>(
               const xhtsResponse = XHTSResponseSchema.parse(await xhts.json())
   
               return {
-                id: xhtsResponse.DisplayClaims.xui[0].xid,
-                name: xhtsResponse.DisplayClaims.xui[0].gtg,
-
-                refreshToken: tokens.refresh_token,
                 gamertag: xhtsResponse.DisplayClaims.xui[0].gtg,
                 xuid: xhtsResponse.DisplayClaims.xui[0].xid,
                 email: decoded.email,
@@ -101,10 +130,13 @@ export default function XboxLive<P extends XboxProfile>(
           throw new Error()
         },
       },
-      async profile(profile) {
-        return profile
+      profile(profile: any): User {
+        return {
+          ...profile,
+          id: profile.xuid,
+          name: profile.gamertag,
+        }
       },
-      style: { logo: "/microsoft.svg", text: "#fff", bg: "#3b8526" },
       options,
     }
   }

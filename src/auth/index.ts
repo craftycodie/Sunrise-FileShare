@@ -1,12 +1,11 @@
 import { env } from "@/src/env"
 import XboxLive from "@/src/XboxLive"
-import NextAuth, { AuthOptions } from "next-auth"
+import NextAuth, { NextAuthConfig } from "next-auth"
 import { JWT } from "next-auth/jwt"
-import AzureADProvider from "next-auth/providers/azure-ad"
 
 
-export const authOptions: AuthOptions = {
-    // Configure one or more authentication providers
+export const nextAuthConfig: NextAuthConfig = {
+    basePath: '/api/auth',
     providers: [
       XboxLive({
         clientId: env.AZURE_AD_CLIENT_ID,
@@ -45,6 +44,4 @@ export const authOptions: AuthOptions = {
   }
   
 
-const handler = NextAuth(authOptions)
-
-export { handler as GET, handler as POST }
+export const {handlers, auth, signIn, signOut} = NextAuth(nextAuthConfig)
