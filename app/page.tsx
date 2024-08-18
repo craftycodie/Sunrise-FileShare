@@ -1,17 +1,20 @@
 import Image from "next/image";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
-import { t } from "@/src/api/trpc";
 import { api } from "@/src/trpc/server";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
 
   const loggedIn = await api.sunrise.loggedIn.query();
+  const playlists = await api.sunrise.matchmakingPlaylists.query();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <h1>Logged in as {session?.user?.gamertag}</h1>
+      <p style={{whiteSpace: 'pre'}}>
+        {JSON.stringify(playlists, null, 2)}
+      </p>
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
           Get started by editing&nbsp;
