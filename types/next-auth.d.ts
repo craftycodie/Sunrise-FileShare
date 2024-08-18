@@ -11,6 +11,7 @@ declare module "next-auth" {
         xuid: string,
         gamertag: string,
         email: string,
+        role: "user" | "admin",
     };
   }
 

@@ -1,12 +1,10 @@
 import { headers } from "next/headers";
 import { createTRPCClient, loggerLink } from "@trpc/client";
 
-import type { AppRouter } from "@acme/api";
-
-import { endingLink, transformer } from "./shared";
+import { endingLink } from "./shared";
+import { AppRouter } from "../api/router";
 
 export const api = createTRPCClient<AppRouter>({
-  transformer: transformer,
   links: [
     loggerLink({
       enabled: (opts) =>
@@ -25,4 +23,4 @@ export const api = createTRPCClient<AppRouter>({
   ],
 });
 
-export { type RouterInputs, type RouterOutputs } from "@acme/api";
+export { type RouterInputs, type RouterOutputs } from '../api/router';

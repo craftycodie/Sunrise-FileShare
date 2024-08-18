@@ -15,7 +15,6 @@ export const authOptions: AuthOptions = {
     ],
     callbacks: {
       jwt: ({token, user, account, profile}): JWT => {
-        console.log('AT JWT WITH', { token, user, account, profile });
         if (account && profile) {
           return {
             user: {
@@ -23,18 +22,15 @@ export const authOptions: AuthOptions = {
               gamertag: user.gamertag,
               email: user.email,
             },
-            accessToken: user.accessToken,
-            refreshToken: user.refreshToken,
+            accessToken: account.access_token,
+            refreshToken: account.refresh_token,
           };
         }
         else {
-          console.log({ token, user, account, profile });
-
           return token as JWT;
         }
       },
       session({ session, token, user }) {
-        console.log('AT SESSION WITH', { session, token, user })
         return {
           user: token.user,
           expires: 0,

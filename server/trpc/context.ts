@@ -1,7 +1,9 @@
-import { getSession } from "next-auth/react";
+import { NextApiRequest } from "next";
+import { getServerSession } from "next-auth";
+import { getParsedToken } from "../auth/jwt";
 
-export const createContext = async () => {
-  const session = await getSession();
+export const createContext = async (request: NextApiRequest) => {
+  const session = await getParsedToken({req: request});
   const ctx = {
     session,
   }
