@@ -14,10 +14,10 @@ const JWTSchema = z.object({
 
 export const getParsedToken = async (
     ...params: Parameters<typeof getToken>
-  ): Promise<JWT | null> => {
+  ): Promise<JWT | undefined> => {
     const token = await getToken(...params);
     const parsed = JWTSchema.safeParse(token);
-    if (!parsed.success) return null;
+    if (!parsed.success) return undefined;
     return parsed.data;
   };
   

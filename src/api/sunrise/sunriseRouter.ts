@@ -1,15 +1,20 @@
 import { Axios } from "axios";
 
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { matchmakingPlaylists } from "./matchmakingPlaylists";
+import { serviceRecord } from "./serviceRecord";
+import { screenshots } from "./screenshots";
+import { env } from "@/src/env";
 
 export const sunriseRouter = createTRPCRouter({
-  loggedIn: protectedProcedure.query(async (opts) => {
-    return opts.ctx.auth.user.xuid ? "yes" : "no";
+  loggedIn: publicProcedure.query(async (opts) => {
+    return opts.ctx.auth?.user.xuid ? "yes" : "no";
   }),
   matchmakingPlaylists,
+  serviceRecord,
+  screenshots,
 });
 
 export const sunriseAxios = new Axios({
-    baseURL: "http://174.136.231.17:8000/"
+    baseURL: env.SUNRISE_API_BASE_URL,
 })

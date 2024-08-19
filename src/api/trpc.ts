@@ -13,7 +13,7 @@ import { ZodError } from "zod";
 
 import { Session } from "next-auth";
 
-type AuthContext = Session | null;
+type AuthContext = Session;
 /**
  * 1. CONTEXT
  *
@@ -25,8 +25,7 @@ type AuthContext = Session | null;
  */
 interface CreateContextOptions {
   headers: Headers;
-  auth: AuthContext;
-  apiKey?: string | null;
+  auth?: AuthContext;
   req?: NextRequest;
 }
 
@@ -129,7 +128,7 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
  */
 export const protectedAdminProcedure = protectedProcedure.use(
   ({ ctx, next }) => {
-    if (ctx.auth.user.role !== 'admin') {
+    if (ctx.auth?.user.role !== 'admin') {
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "You must be an admin to perform this action",
