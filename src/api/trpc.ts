@@ -12,8 +12,10 @@ import { ZodError } from "zod";
 
 
 import { Session } from "next-auth";
+import { JWT } from "next-auth/jwt";
+import { SunriseJWT } from "@/server/auth/jwt";
 
-type AuthContext = Session;
+type AuthContext = SunriseJWT | undefined;
 /**
  * 1. CONTEXT
  *
@@ -53,9 +55,7 @@ export const createTRPCContext = async (opts: {
   headers: Headers;
   auth: AuthContext;
   req?: NextRequest;
-  // eslint-disable-next-line @typescript-eslint/require-await
 }) => {
-
   return createInnerTRPCContext({
     auth: opts.auth,
     req: opts.req,

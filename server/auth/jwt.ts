@@ -12,9 +12,11 @@ const JWTSchema = z.object({
     refreshToken: z.string(),
 });
 
+export type SunriseJWT = z.infer<typeof JWTSchema>;
+
 export const getParsedToken = async (
     ...params: Parameters<typeof getToken>
-  ): Promise<JWT | undefined> => {
+  ): Promise<SunriseJWT | undefined> => {
     const token = await getToken(...params);
     const parsed = JWTSchema.safeParse(token);
     if (!parsed.success) return undefined;

@@ -190,10 +190,15 @@ const CampaignBadge = ({campaignBadge}: {campaignBadge: number}) => {
     );
 }
 
-const RankBadge = ({rank, grade}: {rank: number, grade: number}) => {
+const RankBadge = ({rank, grade, size}: {rank: number, grade: number, size: number}) => {
     // return svg from public folder
     return (
-        <img src={`/img/rank/${rank.toString() + (grade > 1 ? `_${grade - 1}` : '')}.svg`} height={100} />
+        <Box sx={{width: size, height: size, display: 'flex', justifyContent: 'center'}}>
+            <img src={`/img/rank/${rank.toString() + (grade > 1 ? `_${grade - 1}` : '')}.svg`} style={{
+                maxWidth: '100%',
+                maxHeight: '100%',
+            }} />
+        </Box>
     );
 }
 
@@ -221,7 +226,7 @@ export const ServiceRecordPlaceholder = ({serviceRecord}: {serviceRecord: Servic
                     backgroundColor: serviceRecord.emblemBackgroundColor,
                     armourPrimaryColor: serviceRecord.primaryColor,
                 }}/>
-                <Box>
+                <Box display='flex' alignItems='flex-start' flexDirection='column' justifyContent='center' height='100%'>
                     <Typography variant='h4'>{serviceRecord.playerName} - {serviceRecord.serviceTag}</Typography>
                     <Typography variant='body1'>Global Rank: {rankStrings[serviceRecord.rank]}, {'Grade ' + serviceRecord.grade}</Typography>
                     <Typography variant='body2'>Highest Skill: {serviceRecord.highestSkill} | EXP {serviceRecord.totalEXP} | Next Rating: {getNextRank(serviceRecord.rank, serviceRecord.grade, serviceRecord.highestSkill)}</Typography>
@@ -231,8 +236,8 @@ export const ServiceRecordPlaceholder = ({serviceRecord}: {serviceRecord: Servic
                 flexDirection: 'row', 
                 gap: 2,
             }}>
-                <RankBadge rank={serviceRecord.rank} grade={serviceRecord.grade}/>
-                <CampaignBadge campaignBadge={serviceRecord.campaignProgress}/>
+                <RankBadge rank={serviceRecord.rank} grade={serviceRecord.grade} size={100}/>
+                {/* <CampaignBadge campaignBadge={serviceRecord.campaignProgress}/> */}
             </Stack>
             {/* <Rank */}
         </Stack>

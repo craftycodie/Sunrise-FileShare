@@ -3,12 +3,12 @@
 import { Stack, Box, Typography } from "@mui/material";
 import { Session } from "next-auth";
 import { getSession, signIn, signOut } from "next-auth/react";
+import { NavBar } from "./NavBar";
 
-export const Header = ({session}: {session: Session | undefined}) => {
+export const Header = ({session}: {session: Session | null}) => {
     const loggedIn = !!session?.user?.xuid;
     
     return (
-        // give the stack a dark blue gradient
         <Box
             sx={{
                 backgroundColor: '#222',

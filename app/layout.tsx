@@ -6,7 +6,8 @@ import { Container } from "@mui/material";
 import { Header } from "@/src/components/Header";
 import CssBaseline from '@mui/material/CssBaseline';
 import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
+import { NavBar } from "@/src/components/NavBar";
+import { authOptions } from "@/src/api/auth";
 
 
 export const metadata: Metadata = {
@@ -29,6 +30,7 @@ export default async function RootLayout({
           <ThemeProvider theme={theme}>
           <CssBaseline />
             <Header session={session} />
+            <NavBar session={session}/>
             <Container maxWidth="md">              
               {children}
             </Container>

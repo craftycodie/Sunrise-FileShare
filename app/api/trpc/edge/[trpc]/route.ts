@@ -9,7 +9,7 @@ export const runtime = "edge";
 const createContext = async (req: NextRequest) => {
   return createTRPCContext({
     headers: req.headers,
-    auth: await getParsedToken({ req }),
+    auth: (await getParsedToken({ req })),
     req,
   });
 };

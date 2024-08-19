@@ -36,7 +36,10 @@ export default function XboxLive<P extends XboxProfile>(
         },
       },
       token: {
-        async request({params, provider}: { params: Record<string, string>, provider: OAuthConfig<P> }) {
+        async request({params, provider}: { params: Record<string, unknown>, provider: OAuthConfig<P> & {
+          signinUrl: string
+          callbackUrl: string
+        } }) {
           const response = await fetch(
             `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/token`,
             {
@@ -45,11 +48,11 @@ export default function XboxLive<P extends XboxProfile>(
                 "Content-Type": "application/x-www-form-urlencoded",
               },
               body: new URLSearchParams({
-                client_id: provider.clientId!,
-                client_secret: provider.clientSecret!,
-                code: params.code!,
+                client_id: options.clientId,
+                client_secret: options.clientSecret,
+                code: params.code as string,
                 grant_type: "authorization_code",
-                redirect_uri: provider.callbackUrl!,
+                redirect_uri: provider.callbackUrl,
               })
             }
           )

@@ -15,7 +15,7 @@ export const endingLink = (opts?: {
   ((runtime) => {
     const sharedOpts = {
       headers: opts?.headers,
-    } satisfies Partial<HTTPBatchLinkOptions>;
+    } satisfies Partial<HTTPBatchLinkOptions<any>>;
 
     const edgeLink = httpBatchLink({
       ...sharedOpts,

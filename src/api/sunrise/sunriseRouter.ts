@@ -2,9 +2,10 @@ import { Axios } from "axios";
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { matchmakingPlaylists } from "./matchmakingPlaylists";
-import { serviceRecord } from "./serviceRecord";
-import { screenshots } from "./screenshots";
+import { serviceRecord, serviceRecords } from "./serviceRecord";
+import { playerScreenshots, screenshots } from "./screenshots";
 import { env } from "@/src/env";
+import { getXuid } from "./xuid";
 
 export const sunriseRouter = createTRPCRouter({
   loggedIn: publicProcedure.query(async (opts) => {
@@ -12,7 +13,10 @@ export const sunriseRouter = createTRPCRouter({
   }),
   matchmakingPlaylists,
   serviceRecord,
+  serviceRecords,
+  playerScreenshots,
   screenshots,
+  getXuid,
 });
 
 export const sunriseAxios = new Axios({

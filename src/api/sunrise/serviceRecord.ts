@@ -37,9 +37,25 @@ const ServiceRecordSchema = jsonStringifySchema(z.object({
 
 export type ServiceRecord = z.infer<typeof ServiceRecordSchema>;
 
-export const serviceRecord = protectedProcedure.query(async ({ctx}) => {
-    const response = await sunriseAxios.get(`/sunrise/player/${ctx.auth.user.xuid}/servicerecord`);
-    console.log(response.data);
+export const serviceRecord = publicProcedure.input(
+    z.object({ xuid: z.string().length(16) })
+).query(async ({input}) => {
+    const response = await sunriseAxios.get(`/sunrise/player/${input.xuid}/servicerecord`);
     const data = ServiceRecordSchema.parse(response.data);
+    return data;
+});
+
+const ServiceRecordsSchema = jsonStringifySchema(z.array(ServiceRecordSchema));
+
+export const serviceRecords = publicProcedure.input(
+    z.object({ pageSize: z.number(), pageNumber: z.number() })
+).query(async ({input}) => {
+    const response = await sunriseAxios.get(`/sunrise/players`,
+        {params: {
+            pageSize: input.pageSize,
+            pageNumber: input.pageNumber,
+        }}
+    );
+    const data = ServiceRecordsSchema.parse(response.data);
     return data;
 });
