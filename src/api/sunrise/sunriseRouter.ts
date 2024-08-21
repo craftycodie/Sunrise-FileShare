@@ -6,6 +6,7 @@ import { serviceRecord, serviceRecords } from "./serviceRecord";
 import { playerScreenshots, screenshots } from "./screenshots";
 import { env } from "@/src/env";
 import { getXuid } from "./xuid";
+import { fileShare } from "./fileShare";
 
 export const sunriseRouter = createTRPCRouter({
   loggedIn: publicProcedure.query(async (opts) => {
@@ -17,6 +18,7 @@ export const sunriseRouter = createTRPCRouter({
   playerScreenshots,
   screenshots,
   getXuid,
+  fileShare,
 });
 
 export const sunriseAxios = new Axios({
